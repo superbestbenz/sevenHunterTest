@@ -45,22 +45,57 @@ class FibonacciScrollWidget extends StatelessWidget {
     return ChangeNotifierProvider.value(
       value: context.read<FibonacciProvider>(),
       child: Consumer<FibonacciProvider>(builder: (context, provider, child) {
-        return ListView.builder(
-            itemCount: provider.fibonacciNumbers.length,
+        return SingleChildScrollView(
+          child: Column(
+            children: provider.fibonacciItems.entries.map((entry) {
+              return GestureDetector(
+                onTap: () {
+                  provider.addFunction(context, entry.key);
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                  ),
+                  constraints: const BoxConstraints(
+                    minHeight: 50,
+                    maxHeight: 100,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('index: ${entry.key} number: ${entry.value?.number}'),
+                      Icon(entry.value?.icon ?? Icons.help)
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        );
+        ListView.builder(
+            itemCount: provider.fibonacciItems.length,
             itemBuilder: (context, index) {
-              final number = provider.fibonacciNumbers[index];
-              final icon = provider.getIconForIndex(index);
-              return Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                ),
-                constraints: const BoxConstraints(
-                  minHeight: 50,
-                  maxHeight: 100,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [Text('index: $index number: $number'), Icon(icon)],
+              final item = provider.fibonacciItems[index];
+
+              return GestureDetector(
+                onTap: () {
+                  provider.addFunction(context, index);
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                  ),
+                  constraints: const BoxConstraints(
+                    minHeight: 50,
+                    maxHeight: 100,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('index: $index number: ${item?.number}'),
+                      Icon(item?.icon ?? Icons.help)
+                    ],
+                  ),
                 ),
               );
             });
